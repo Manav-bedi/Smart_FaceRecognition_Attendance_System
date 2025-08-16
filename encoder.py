@@ -19,14 +19,14 @@ folderPath = 'Images'
 imgList = []
 studentIds = []
 
-# Example student metadata (replace with your own)
+
 studentInfo = {
     '101': {'name': 'Student One', 'course': 'B.Tech CSE', 'section': 'A'},
     '102': {'name': 'Student Two', 'course': 'BCA', 'section': 'B'},
-    # Add more if needed
+    
 }
 
-#  Process Images 
+
 pathList = os.listdir(folderPath)
 print(f"Found image files: {pathList}")
 
@@ -41,7 +41,7 @@ for path in pathList:
     imgList.append(img)
     studentIds.append(student_id)
 
-    # Upload to Supabase Storage (bucket = 'student')
+
     image_path = os.path.join(folderPath, path)
     try:
         with open(image_path, "rb") as f:
@@ -53,7 +53,7 @@ for path in pathList:
     except Exception as e:
         print(f"Error uploading {path}: {e}")
 
-    # Add or update student metadata in Supabase table
+  
     metadata = studentInfo.get(student_id, {"name": "Unknown", "course": "NA", "section": "NA"})
     student_payload = {
         "student_id": student_id,
@@ -69,13 +69,13 @@ for path in pathList:
     except Exception as e:
         print(f"Error inserting metadata for {student_id}: {e}")
 
-# Encode All Faces
+
 def findEncodings(imagesList):
     encodeList = []
     for img in imagesList:
         rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         encodings = face_recognition.face_encodings(rgb_img)
-        if encodings:  # only if a face is found
+        if encodings: 
             encodeList.append(encodings[0])
         else:
             print("Warning: No face detected in one of the images.")
@@ -84,7 +84,7 @@ def findEncodings(imagesList):
 print("Encoding all faces...")
 encodeListKnown = findEncodings(imgList)
 
-# Save encodings and IDs
+
 with open('EncodeFile.p', 'wb') as file:
     pickle.dump((encodeListKnown, studentIds), file)
 
