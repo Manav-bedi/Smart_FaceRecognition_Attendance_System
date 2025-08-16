@@ -9,12 +9,12 @@ import os
 SUPABASE_URL = os.getenv("URL")
 SUPABASE_KEY = os.getenv("KEY")
 
-if not SUPABASE_URL or not SUPABASE_KEY:
+if not URL or not KEY:
     raise ValueError("Supabase credentials not found.")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(URL, KEY)
 
-# ================== Local Image Folder ==================
+
 folderPath = 'Images'
 imgList = []
 studentIds = []
@@ -26,7 +26,7 @@ studentInfo = {
     # Add more if needed
 }
 
-# ================== Process Images ==================
+#  Process Images 
 pathList = os.listdir(folderPath)
 print(f"Found image files: {pathList}")
 
@@ -69,7 +69,7 @@ for path in pathList:
     except Exception as e:
         print(f"Error inserting metadata for {student_id}: {e}")
 
-# ================== Encode All Faces ==================
+# Encode All Faces
 def findEncodings(imagesList):
     encodeList = []
     for img in imagesList:
