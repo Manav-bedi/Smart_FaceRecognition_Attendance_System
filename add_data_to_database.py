@@ -11,7 +11,7 @@ if not URL or not KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-# Replace with your own data or fetch dynamically
+
 data = {
     "101": {
         "name": "Student One",
@@ -47,7 +47,7 @@ data = {
     }
 }
 
-# ================== Insert Data into Supabase ==================
+
 for student_id, value in data.items():
     record = {
         "student_id": student_id,
