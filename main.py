@@ -18,7 +18,7 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ================== Webcam and UI Setup ==================
+
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
@@ -29,14 +29,14 @@ folderModePath = 'Resources/Modes'
 modePath = os.listdir(folderModePath)
 imgModeList = [cv2.imread(os.path.join(folderModePath, path)) for path in modePath]
 
-# ================== Load Encodings ==================
+
 with open('EncodeFile.p', 'rb') as file:
     encodeListKnown, studentIds = pickle.load(file)
 
-# ================== Attendance Logic ==================
+
 markedStudents = set()
 statusImg = imgModeList[0]
-imageCache = {}  # Cache for profile photos
+imageCache = {}  
 
 def fetch_image_from_url(url):
     try:
@@ -69,7 +69,7 @@ while True:
                 student_id = studentIds[matchIndex]
                 print(f"Recognized: {student_id}")
 
-                # Bounding box
+          
                 y1, x2, y2, x1 = faceLoc
                 y1, x2, y2, x1 = [v * 4 for v in (y1, x2, y2, x1)]
                 bbox = 55 + x1, 162 + y1, x2 - x1, y2 - y1
@@ -77,11 +77,11 @@ while True:
 
                 if student_id not in markedStudents:
                     try:
-                        # Fetch student record
+                        
                         res = supabase.table("students").select("*").eq("student_id", student_id).execute()
                         data = res.data[0]
 
-                        # Mark attendance
+                 
                         new_attendance = (data.get("total_attendance") or 0) + 1
                         supabase.table("students").update({
                             "total_attendance": new_attendance,
@@ -89,10 +89,9 @@ while True:
                         }).eq("student_id", student_id).execute()
 
                         markedStudents.add(student_id)
-                        statusImg = imgModeList[2]  # Marked
+                        statusImg = imgModeList[2] 
                         print(f"Attendance marked for {student_id}")
 
-                        # Display profile picture
                         image_url = data.get("image_url")
                         if image_url:
                             if student_id not in imageCache:
@@ -103,7 +102,7 @@ while True:
                             if student_id in imageCache:
                                 imgBackground[44:260, 550:766] = imageCache[student_id]
 
-                        # Display info
+                       
                         cv2.putText(imgBackground, f"{data['name']}", (860, 460), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 0), 2)
                         cv2.putText(imgBackground, f"{data['course']} - {data['section']}", (860, 500), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
                         cv2.putText(imgBackground, f"Attendance: {new_attendance}", (860, 540), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -116,11 +115,10 @@ while True:
                     print(f"{student_id} already marked.")
                     statusImg = imgModeList[3]
 
-        time.sleep(0.3)  # Slight delay for smooth performance
+        time.sleep(0.3) 
     else:
         statusImg = imgModeList[1]
 
-    # Show status mode (Right UI block)
     imgBackground[44:44+633, 808:808+414] = statusImg
     cv2.imshow('Face Attendance System', imgBackground)
 
