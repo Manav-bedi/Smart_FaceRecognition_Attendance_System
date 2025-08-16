@@ -1,0 +1,5 @@
+opencv-python
+face-recognition
+cvzone
+numpy
+supabase
